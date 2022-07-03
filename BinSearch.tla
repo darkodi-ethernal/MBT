@@ -51,17 +51,30 @@ Init ==
 
 \* Computation step
 \* You can think of the effect of x' = e being delayed until the whole predicate Next is evaluated.
+\* Computation step (lines 5-16)
 Next ==
     IF ~isTerminated
     THEN IF low <= high
-      THEN          \* while part - TODO
-        UNCHANGED <<low, high, isTerminated, returnValue>>
-      ELSE          
+      THEN          \* while loop
+        LET mid == (low + high) \div 2 IN
+        LET midVal == INPUT_SEQ[mid + 1] IN \* + 1 because tla indices starts from 1 
+          \//\ midVal < INPUT_KEY 
+            /\ low' = mid + 1
+            /\ UNCHANGED <<high, returnValue, isTerminated>>
+          \//\ midVal > INPUT_KEY 
+            /\ high' = mid -1
+            /\ UNCHANGED <<low, returnValue, isTerminated>>
+          \//\ midVal = INPUT_KEY 
+            /\ returnValue' = mid
+            /\ isTerminated' = TRUE
+            /\ UNCHANGED <<low, high>>
+      ELSE         
         /\ isTerminated' = TRUE
         /\ returnValue' = -(low + 1)
         /\ UNCHANGED <<low, high>>
     ELSE            \* isTerminated
       UNCHANGED <<low, high, returnValue, isTerminated>>
+
 
 \* We can get an idea about the expected result of the search from the source:
 \*
@@ -71,6 +84,8 @@ Next ==
 \*
 \* "Note that this guarantees that the return value will be >= 0 if
 \*  and only if the key is found."
+\* Invariant holds in every state that is reachable from the states specified by Init
+\* via a sequence of transitions specified by Next:
 ReturnValueIsCorrect ==
     \* a local constant called MatchingIndices that is equal to the set of indices i in INPUT_SEQ
     \* so that the sequence elements at these indices are equal to INPUT_KEY.
@@ -85,4 +100,5 @@ ReturnValueIsCorrect ==
 \* What we expect from the search when it is finished.
 Postcondition ==
     isTerminated => ReturnValueIsCorrect
+
 ===============================================================================
