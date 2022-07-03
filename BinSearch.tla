@@ -60,7 +60,8 @@ Next ==
         /\ isTerminated' = TRUE
         /\ returnValue' = -(low + 1)
         /\ UNCHANGED <<low, high>>
-
+    ELSE            \* isTerminated
+      UNCHANGED <<low, high, returnValue, isTerminated>>
 
 
 ===============================================================================
