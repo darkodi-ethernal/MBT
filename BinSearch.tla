@@ -49,9 +49,17 @@ Init ==
     /\ isTerminated = FALSE
     /\ returnValue = 0
 
-\* How can we make a step?
+\* Computation step
+\* You can think of the effect of x' = e being delayed until the whole predicate Next is evaluated.
 Next ==
-    TRUE    \* don't care
+    IF ~isTerminated
+    THEN IF low <= high
+      THEN          \* while part - TODO
+        UNCHANGED <<low, high, isTerminated, returnValue>>
+      ELSE          
+        /\ isTerminated' = TRUE
+        /\ returnValue' = -(low + 1)
+        /\ UNCHANGED <<low, high>>
 
 
 
