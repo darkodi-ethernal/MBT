@@ -28,12 +28,31 @@ MAX_INT  == 2^(INT_WIDTH - 1) - 1
 \* the smallest value of a signed integer
 MIN_INT  == -2^(INT_WIDTH - 1)
 
+VARIABLES
+    \* The low end of the search interval (inclusive).
+    \* @type: Int;
+    low,
+    \* The high end of the search interval (inclusive).
+    \* @type: Int;
+    high,
+    \* Did the algorithm terminate.
+    \* @type: Bool;
+    isTerminated,
+    \* The result when terminated.
+    \* @type: Int;
+    returnValue
+
 \* How the can we start?
 Init ==
-    TRUE    \* don't care
+    /\ low = 0
+    /\ high = Len(INPUT_SEQ) - 1
+    /\ isTerminated = FALSE
+    /\ returnValue = 0
 
 \* How can we make a step?
 Next ==
     TRUE    \* don't care
+
+
 
 ===============================================================================
