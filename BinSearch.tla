@@ -63,5 +63,26 @@ Next ==
     ELSE            \* isTerminated
       UNCHANGED <<low, high, returnValue, isTerminated>>
 
+\* We can get an idea about the expected result of the search from the source:
+\*
+\* https://github.com/openjdk/jdk/blob/d7f31d0d53bfec627edc83ceb75fc6202891e186/src/java.base/share/classes/java/util/Arrays.java#L1662-L1698
+\*
+\* The property of particular interest is this one:
+\*
+\* "Note that this guarantees that the return value will be >= 0 if
+\*  and only if the key is found."
+ReturnValueIsCorrect ==
+    \* a local constant called MatchingIndices that is equal to the set of indices i in INPUT_SEQ
+    \* so that the sequence elements at these indices are equal to INPUT_KEY.
+    LET MatchingIndices ==  
+        { i \in DOMAIN INPUT_SEQ: INPUT_SEQ[i] = INPUT_KEY }
+    IN
+    IF MatchingIndices /= {} \* If MatchingIndices is non-empty
+    THEN \* Indices in TLA+ start with 1, whereas the Java returnValue starts with 0
+        returnValue + 1 \in MatchingIndices
+    ELSE returnValue < 0
 
+\* What we expect from the search when it is finished.
+Postcondition ==
+    isTerminated => ReturnValueIsCorrect
 ===============================================================================
