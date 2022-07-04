@@ -78,7 +78,7 @@ Next ==
     THEN IF low <= high
       THEN          \* lines 6-14
         /\ nSteps' = nSteps + 1
-        /\ LET mid == IAdd(low, high) \div 2 IN
+        /\ LET mid == IAdd(low, IAdd(high, -low) \div 2) IN
            LET midVal == INPUT_SEQ[mid + 1] IN
             \//\ midVal < INPUT_KEY \* lines 9-10
               /\ low' = IAdd(mid, 1)
@@ -139,5 +139,14 @@ Termination ==
 \* we can implicitly show termination too.
 Progress ==
     ~isTerminated' => (low' > low \/ high' < high)
+
+\* Make sure that INPUT_SEQ is accessed within its bounds
+InBounds ==
+  LET mid == IAdd(low, IAdd(high, -low) \div 2) IN
+  \* collect the conditions of IF-THEN-ELSE
+  ~isTerminated =>
+    ((low <= high) =>
+      (mid + 1) \in DOMAIN INPUT_SEQ)
+
 
 ===============================================================================

@@ -3,7 +3,7 @@
 EXTENDS Apalache
 
 \* fix 8 bits
-INT_WIDTH == 8
+INT_WIDTH == 6
 
 \* We do not fix INT_SEQ and INPUT_KEY.
 \* Instead, we reason about all sequences with ConstInit.
@@ -37,8 +37,11 @@ INSTANCE BinSearch
 
 \* Instead of checking a concrete sequence, which is not very exciting,
 \* we simply initialize constants with arbitrary values of proper types.
+
+\* This idiom allows us to initialize CONSTANTS with a TLA+ formula
 ConstInit ==
-    /\ INPUT_KEY = Gen(1)
-    /\ INPUT_SEQ = Gen(MAX_INT)
+    /\ INPUT_KEY = Gen(1) \* produce an unrestricted integer to be used as a value of INPUT_KEY
+    /\ INPUT_SEQ = Gen(MAX_INT) \* produce a sequence of integers to be used as a value of INPUT_SEQ. 
+\* This sequence is unrestricted, except its length is bounded with MAX_INT, which is exactly what we need in our case study.
 
 ===============================================================================
